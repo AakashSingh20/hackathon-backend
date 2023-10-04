@@ -1,5 +1,5 @@
 const Task = require('../models/Task');
-
+const User = require('../models/User');
 
 
 
@@ -52,19 +52,29 @@ const updateSingleTask = async (req, res) => {
 
 const createTask = async ( req, res) => {
     try {
-        
+
+        const id = req.headers.userid
+
+        const user = await User.findById(id);
+
         const { task , dueDate} = req.body;
 
         const newTask = new Task({
             task,
+            assignedTo: id,
             dueDate,
             completed: false
         });
 
+        user.tasks.push(newTask);
+        await user.save();
+
         await newTask.save();
 
-        res.status(201).json(newTask);
-
+        res.status(201).json({
+            task: newTask,
+            user: user
+        });
 
     } catch (error) {
         
