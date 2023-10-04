@@ -13,7 +13,6 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    tasks: [],
 },
 {
     collection: 'Users'
