@@ -5,7 +5,7 @@ const bycrypt = require('bcrypt');
 
 const SignUp = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, role } = req.body;
 
         const salt = await bycrypt.genSalt();
         const passwordHash = await bycrypt.hash(password, salt);
@@ -14,7 +14,8 @@ const SignUp = async (req, res) => {
             name,
             email,
             password: passwordHash,
-            tasks: []
+            tasks: [],
+            role,
         });
 
         const user = await newUser.save();
@@ -45,6 +46,7 @@ const LoginIn = async (req, res) => {
         delete user.password;
         res.setHeader('authorization', token);
         res.setHeader('userid', user._id);
+        res.setHeader('role', user.role);
         res.status(200).json({ token, user ,  userId: user._id });
 
     } catch (error) {
